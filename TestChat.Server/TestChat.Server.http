@@ -1,0 +1,6 @@
+@TestChat.Server_HostAddress = http://localhost:5143
+
+GET {{TestChat.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
