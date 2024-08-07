@@ -14,7 +14,7 @@ public class ChatHub : Hub<IChatServer>
     
     public override async Task OnConnectedAsync()
     {
-        await Clients.All.UserJoined(Context.ConnectionId);
+        await Clients.Others.UserJoined(Context.ConnectionId);
 
         foreach (var session in _sessionService.ActiveSessions)
         {
@@ -44,7 +44,7 @@ public class ChatHub : Hub<IChatServer>
             return;
         }
 
-        await Clients.All.UserChangedName(Context.ConnectionId, userName);
+        await Clients.Others.UserChangedName(Context.ConnectionId, userName);
         await Clients.Caller.ChangeNameResult(true);
     }
 
