@@ -1,0 +1,15 @@
+﻿<textarea @bind="_message" class="form-control" placeholder="Enter your message here..."></textarea>
+<button @onclick="SendMessage" class="btn btn-primary">Send</button>
+
+@code {
+    private string? _message;
+    
+    [Parameter]
+    public EventCallback<string> OnMessageSent { get; set; }
+
+    private void SendMessage()
+    {
+        OnMessageSent.InvokeAsync(_message);
+        _message = "";
+    }
+}

@@ -14,19 +14,19 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" @onclick="() => ChatService.ChangeRoom()">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Public chat
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="#" Match="NavLinkMatch.All">
+            <NavLink class="nav-link">
                 Online users (@ChatService.Users.Count)
             </NavLink>
         </div>
         @foreach (var user in ChatService.Users)
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="room" Match="NavLinkMatch.All">
+                <NavLink class="nav-link" @onclick="() => ChatService.ChangeRoom(user.ConnectionId)">
                     @user.DisplayName
                 </NavLink>
             </div>

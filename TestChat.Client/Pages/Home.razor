@@ -4,11 +4,16 @@
 @inject IChatService ChatService
 @implements IAsyncDisposable
 
-<h3>Messages</h3>
+<h3>@RoomTitle</h3>
 
 <Chat History="@ChatService.ActiveChat"/>
+<MessageInput OnMessageSent="SendMessage"/>
 
 @code {
+
+    private string RoomTitle => ChatService.ActiveUser is not null
+        ? $"Private chat with {ChatService.ActiveUser.DisplayName}"
+        : "Public chat";
 
     protected override async Task OnInitializedAsync()
     {
@@ -16,9 +21,15 @@
         ChatService.OnChange += StateHasChanged;
     }
 
+    public async Task SendMessage(string text)
+    {
+        await ChatService.SendMessageAsync(text);
+    }
+
     public async ValueTask DisposeAsync()
     {
         await ChatService.DisposeAsync();
         ChatService.OnChange -= StateHasChanged;
     }
+
 }

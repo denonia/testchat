@@ -54,4 +54,9 @@ public class ChatHub : Hub<IChatServer>
         
         await target.ReceiveMessage(Context.ConnectionId, message);
     }
+    
+    public async Task SendPublicMessage(string message)
+    {
+        await Clients.Others.ReceivePublicMessage(Context.ConnectionId, message);
+    }
 }
