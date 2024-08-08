@@ -7,9 +7,9 @@
     [Parameter]
     public EventCallback<string> OnMessageSent { get; set; }
 
-    private void SendMessage()
+    private async Task SendMessage()
     {
-        OnMessageSent.InvokeAsync(_message);
+        await OnMessageSent.InvokeAsync(_message);
         _message = "";
     }
 }

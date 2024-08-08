@@ -40,12 +40,12 @@ public class ChatHub : Hub<IChatServer>
 
         if (!success)
         {
-            await Clients.Caller.ChangeNameResult(false);
+            await Clients.Caller.ChangeNameResult(false, userName);
             return;
         }
 
         await Clients.Others.UserChangedName(Context.ConnectionId, userName);
-        await Clients.Caller.ChangeNameResult(true);
+        await Clients.Caller.ChangeNameResult(true, userName);
     }
 
     public async Task SendMessage(string targetId, string message)

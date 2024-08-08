@@ -15,6 +15,8 @@ public class ChatService : IChatService
     public List<ChatUser> Users { get; } = [];
 
     public event Action? OnChange;
+    public event Action? OnNameChangeSuccess;
+    public event Action? OnNameChangeFail;
 
     public ChatService(IConfiguration configuration)
     {
@@ -42,6 +44,11 @@ public class ChatService : IChatService
         
         ActiveChat.UserMessage(Myself.DisplayName, text);
         NotifyStateChanged();
+    }
+
+    public async Task ChangeNameAsync(string userName)
+    {
+        await _hubConnection.SendAsync("ChangeName", userName);
     }
 
     public void ChangeRoom(string? userId = null)
@@ -77,12 +84,38 @@ public class ChatService : IChatService
             Users.Add(new ChatUser(connectionId));
             NotifyStateChanged();
         });
+        
+        _hubConnection.On<string, string>("UserChangedName", (connectionId, userName) =>
+        {
+            var user = Users.Single(u => u.ConnectionId == connectionId);
+            PublicChat.SystemMessage($"{user.DisplayName} has changed name to {userName}");
+            user.History.SystemMessage($"{user.DisplayName} has changed name to {userName}");
+
+            user.UserName = userName;
+            
+            NotifyStateChanged();
+        });
 
         _hubConnection.On<string>("UserLeft", connectionId =>
         {
             PublicChat.SystemMessage($"{connectionId} has left");
 
             Users.RemoveAll(u => u.ConnectionId == connectionId);
+            NotifyStateChanged();
+        });
+        
+        _hubConnection.On<bool, string>("ChangeNameResult", (success, userName) =>
+        {
+            if (success)
+            {
+                Myself!.UserName = userName;
+                OnNameChangeSuccess?.Invoke();
+            }
+            else
+            {
+                OnNameChangeFail?.Invoke();
+            }
+
             NotifyStateChanged();
         });
     }

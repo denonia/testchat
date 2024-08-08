@@ -7,5 +7,5 @@ public interface IChatServer
     Task UserJoined(string connectionId);
     Task UserChangedName(string connectionId, string userName);
     Task UserLeft(string connectionId);
-    Task ChangeNameResult(bool success);
+    Task ChangeNameResult(bool success, string userName);
 }

@@ -2,6 +2,7 @@
 @using TestChat.Client.Services
 @using TestChat.Client.Components
 @inject IChatService ChatService
+@inject ToastService ToastService
 @implements IAsyncDisposable
 
 <h3>@RoomTitle</h3>
@@ -15,21 +16,28 @@
         ? $"Private chat with {ChatService.ActiveUser.DisplayName}"
         : "Public chat";
 
+    private async Task SendMessage(string text) => await ChatService.SendMessageAsync(text);
+
+    private void OnNameChangeSuccess() =>
+        ToastService.Notify(new ToastMessage(ToastType.Success, "Name changed successfully."));
+
+    private void OnNameChangeFail() =>
+        ToastService.Notify(new ToastMessage(ToastType.Danger, "Name is already taken!"));
+
     protected override async Task OnInitializedAsync()
     {
         await ChatService.ConnectAsync();
         ChatService.OnChange += StateHasChanged;
-    }
-
-    public async Task SendMessage(string text)
-    {
-        await ChatService.SendMessageAsync(text);
+        ChatService.OnNameChangeSuccess += OnNameChangeSuccess;
+        ChatService.OnNameChangeFail += OnNameChangeFail;
     }
 
     public async ValueTask DisposeAsync()
     {
         await ChatService.DisposeAsync();
         ChatService.OnChange -= StateHasChanged;
+        ChatService.OnNameChangeSuccess -= OnNameChangeSuccess;
+        ChatService.OnNameChangeFail -= OnNameChangeFail;
     }
 
 }

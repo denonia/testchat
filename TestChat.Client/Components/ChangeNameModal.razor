@@ -1,0 +1,25 @@
+﻿<input type="text" @bind="_userName" class="form-control mb-2" placeholder="Enter the name">
+
+<Button Color="ButtonColor.Primary" @onclick="OnSaveClick">Save</Button>
+<Button Color="ButtonColor.Secondary" @onclick="OnCloseClick">Close</Button>
+
+@code {
+    private string? _userName;
+
+    [Parameter] public EventCallback<string> SaveClicked { get; set; }
+
+    [Parameter] public EventCallback CloseClicked { get; set; }
+
+    private async Task OnSaveClick()
+    {
+        await SaveClicked.InvokeAsync(_userName);
+        _userName = "";
+    }
+
+    private async Task OnCloseClick()
+    {
+        await CloseClicked.InvokeAsync(_userName);
+        _userName = "";
+    }
+
+}

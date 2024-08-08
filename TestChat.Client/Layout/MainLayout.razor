@@ -1,4 +1,10 @@
 ﻿@inherits LayoutComponentBase
+@using TestChat.Client.Components
+@using TestChat.Client.Services
+@inject IChatService ChatService
+
+<Modal @ref="_changeNameModal"/>
+
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -6,7 +12,7 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <a @onclick="ShowChangeNameModal">Change name</a>
         </div>
 
         <article class="content px-4">
@@ -14,3 +20,28 @@
         </article>
     </main>
 </div>
+
+<Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
+
+@code
+{
+    private Modal _changeNameModal = default!;
+
+    private async Task ShowChangeNameModal()
+    {
+        await _changeNameModal.ShowAsync<ChangeNameModal>("Change name",
+            parameters: new Dictionary<string, object>
+            {
+                { "SaveClicked", EventCallback.Factory.Create<string>(this, SaveClicked) },
+                { "CloseClicked", EventCallback.Factory.Create(this, CloseClicked) }
+            });
+    }
+
+    private async Task SaveClicked(string userName)
+    {
+        await ChatService.ChangeNameAsync(userName);
+        await _changeNameModal.HideAsync();
+    }
+
+    private Task CloseClicked() => _changeNameModal.HideAsync();
+}
