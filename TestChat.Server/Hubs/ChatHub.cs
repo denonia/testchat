@@ -55,8 +55,8 @@ public class ChatHub : Hub<IChatServer>
         var target = Clients.Client(targetId);
 
         var sentiment = await _textAnalyticsService.AnalyzeSentimentAsync(message);
-        await Clients.Caller.ReceiveMessage(Context.ConnectionId, message, sentiment);
-        await target.ReceiveMessage(Context.ConnectionId, message, sentiment);
+        await Clients.Caller.ReceiveMessage(targetId, Context.ConnectionId, message, sentiment);
+        await target.ReceiveMessage(Context.ConnectionId, Context.ConnectionId, message, sentiment);
     }
     
     public async Task SendPublicMessage(string message)

@@ -1,7 +1,7 @@
 ﻿<input type="text"
        @bind="_message" @bind:event="oninput" @onkeydown="OnKeyDown"
        class="form-control mb-2" placeholder="Enter your message here..."/>
-<button @onclick="SendMessage" class="btn btn-primary">Send</button>
+<button @onclick="SendMessage" class="btn btn-primary mb-2">Send</button>
 
 @code {
     private string? _message;

@@ -4,7 +4,7 @@ namespace TestChat.Server.Hubs;
 
 public interface IChatServer
 {
-    Task ReceiveMessage(string senderId, string message, SentimentAnalysisResult sentiment);
+    Task ReceiveMessage(string roomId, string senderId, string message, SentimentAnalysisResult sentiment);
     Task ReceivePublicMessage(string senderId, string message, SentimentAnalysisResult sentiment);
     Task UserJoined(string connectionId);
     Task UserChangedName(string connectionId, string userName);
