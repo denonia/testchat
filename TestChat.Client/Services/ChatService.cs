@@ -42,7 +42,6 @@ public class ChatService : IChatService
         else
             await _hubConnection.SendAsync("SendMessage", ActiveUser.ConnectionId, text);
         
-        ActiveChat.UserMessage(Myself.DisplayName, text);
         NotifyStateChanged();
     }
 
@@ -62,17 +61,17 @@ public class ChatService : IChatService
         if (_hubConnection is null)
             return;
         
-        _hubConnection.On<string, string>("ReceiveMessage", (senderId, message) =>
+        _hubConnection.On<string, string, SentimentAnalysisResult>("ReceiveMessage", (senderId, message, sentiment) =>
         {
-            var user = Users.Single(u => u.ConnectionId == senderId);
-            user.History.UserMessage(user.DisplayName, message);
+            var user = Users.SingleOrDefault(u => u.ConnectionId == senderId) ?? Myself;
+            user.History.UserMessage(user.DisplayName, message, sentiment);
             NotifyStateChanged();
         });
         
-        _hubConnection.On<string, string>("ReceivePublicMessage", (senderId, message) =>
+        _hubConnection.On<string, string, SentimentAnalysisResult>("ReceivePublicMessage", (senderId, message, sentiment) =>
         {
-            var user = Users.Single(u => u.ConnectionId == senderId);
-            PublicChat.UserMessage(user.DisplayName, message);
+            var user = Users.SingleOrDefault(u => u.ConnectionId == senderId) ?? Myself;
+            PublicChat.UserMessage(user.DisplayName, message, sentiment);
             NotifyStateChanged();
         });
         

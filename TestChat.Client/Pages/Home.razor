@@ -7,8 +7,13 @@
 
 <h3>@RoomTitle</h3>
 
-<Chat History="@ChatService.ActiveChat"/>
-<MessageInput OnMessageSent="SendMessage"/>
+<div id="scroller">
+    <Chat History="@ChatService.ActiveChat"/>
+    <div id="anchor"></div>
+</div>
+<div class="sticky-bottom bg-body">
+    <MessageInput OnMessageSent="SendMessage"/>
+</div>
 
 @code {
 

@@ -10,6 +10,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddSingleton<ISessionService, SessionService>();
+        builder.Services.AddScoped<ITextAnalyticsService, TextAnalyticsService>();
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();

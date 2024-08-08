@@ -1,0 +1,11 @@
+﻿@using TestChat.Client.Models
+
+<span>(😄 @PositiveScore% 😐 @NeutralScore% 😡 @NegativeScore%)</span>
+
+@code {
+    [Parameter] public SentimentAnalysisResult Results { get; set; }
+
+    private int PositiveScore => (int)(Results.PositiveScore * 100);
+    private int NeutralScore => (int)(Results.NeutralScore * 100);
+    private int NegativeScore => (int)(Results.NegativeScore * 100);
+}

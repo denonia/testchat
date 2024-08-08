@@ -6,5 +6,6 @@ public class ChatHistory
 
     public void SystemMessage(string text) => Messages.Add(new SystemMessage(text));
     
-    public void UserMessage(string senderName, string text) => Messages.Add(new UserMessage(senderName, text));
+    public void UserMessage(string senderName, string text, SentimentAnalysisResult sentiment) => 
+        Messages.Add(new UserMessage(senderName, text, sentiment));
 }

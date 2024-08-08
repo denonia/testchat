@@ -1,13 +1,39 @@
-﻿@using TestChat.Client.Models
+﻿@using Humanizer
+@using TestChat.Client.Models
 
 @if (History is not null)
 {
-    <ul>
-        @foreach (var message in History.Messages)
-        {
-            <li>@message.Body @message.SentAt</li>
-        }
-    </ul>
+    @foreach (var message in History.Messages)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                @if (message is UserMessage userMessage)
+                {
+                    <div class="d-flex flex-row">
+                        <p class="mb-1">
+                            <span class="fw-semibold">
+                                @userMessage.SenderName
+                            </span>
+                            <SentimentIndicator Results="@userMessage.Sentiment"/>
+                        </p>
+                        <div class="ms-auto">
+                            <span class="text-secondary" title="@message.SentAt">@message.SentAt.Humanize()</span>
+                        </div>
+                    </div>
+                    @userMessage.Text
+                }
+                @if (message is SystemMessage)
+                {
+                    <div class="d-flex flex-row">
+                        @message.Body
+                        <div class="ms-auto">
+                            <span class="text-secondary" title="@message.SentAt">@message.SentAt.Humanize()</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 }
 
 @code {

@@ -6,10 +6,12 @@ namespace TestChat.Server.Hubs;
 public class ChatHub : Hub<IChatServer>
 {
     private readonly ISessionService _sessionService;
+    private readonly ITextAnalyticsService _textAnalyticsService;
 
-    public ChatHub(ISessionService sessionService)
+    public ChatHub(ISessionService sessionService, ITextAnalyticsService textAnalyticsService)
     {
         _sessionService = sessionService;
+        _textAnalyticsService = textAnalyticsService;
     }
     
     public override async Task OnConnectedAsync()
@@ -51,12 +53,15 @@ public class ChatHub : Hub<IChatServer>
     public async Task SendMessage(string targetId, string message)
     {
         var target = Clients.Client(targetId);
-        
-        await target.ReceiveMessage(Context.ConnectionId, message);
+
+        var sentiment = await _textAnalyticsService.AnalyzeSentimentAsync(message);
+        await Clients.Caller.ReceiveMessage(Context.ConnectionId, message, sentiment);
+        await target.ReceiveMessage(Context.ConnectionId, message, sentiment);
     }
     
     public async Task SendPublicMessage(string message)
     {
-        await Clients.Others.ReceivePublicMessage(Context.ConnectionId, message);
+        var sentiment = await _textAnalyticsService.AnalyzeSentimentAsync(message);
+        await Clients.All.ReceivePublicMessage(Context.ConnectionId, message, sentiment);
     }
 }
