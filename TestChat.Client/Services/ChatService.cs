@@ -77,6 +77,12 @@ public class ChatService : IChatService
                 PublicChat.UserMessage(user.DisplayName, message, sentiment);
                 NotifyStateChanged();
             });
+        
+        _hubConnection.On<string, string>("UserOnline", (connectionId, userName) =>
+        {
+            Users.Add(new ChatUser(connectionId, userName));
+            NotifyStateChanged();
+        });
 
         _hubConnection.On<string>("UserJoined", connectionId =>
         {

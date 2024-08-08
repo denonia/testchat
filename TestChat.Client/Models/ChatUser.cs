@@ -12,4 +12,10 @@ public class ChatUser
     {
         ConnectionId = connectionId;
     }
+    
+    public ChatUser(string connectionId, string? userName)
+    {
+        ConnectionId = connectionId;
+        UserName = userName;
+    }
 }

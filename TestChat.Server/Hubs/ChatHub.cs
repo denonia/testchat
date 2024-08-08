@@ -19,12 +19,7 @@ public class ChatHub : Hub<IChatServer>
         await Clients.Others.UserJoined(Context.ConnectionId);
 
         foreach (var session in _sessionService.ActiveSessions)
-        {
-            await Clients.Caller.UserJoined(session.ConnectionId);
-            
-            if (!string.IsNullOrEmpty(session.UserName))
-                await Clients.Caller.UserChangedName(session.ConnectionId, session.UserName);
-        }
+            await Clients.Caller.UserOnline(session.ConnectionId, session.UserName);
         
         _sessionService.AddUser(Context.ConnectionId);
     }
