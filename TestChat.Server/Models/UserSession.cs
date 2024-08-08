@@ -2,6 +2,7 @@
 
 public class UserSession
 {
+    public string DisplayName => UserName ?? ConnectionId;
     public string ConnectionId { get; set; }
     public string? UserName { get; set; }
 

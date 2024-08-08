@@ -8,7 +8,7 @@ public class SessionService : ISessionService
 
     public IEnumerable<UserSession> ActiveSessions => _activeSessions;
 
-    private UserSession? FindUser(string connectionId) =>
+    public UserSession? FindUser(string connectionId) =>
         _activeSessions.SingleOrDefault(s => s.ConnectionId == connectionId);
 
     public void AddUser(string connectionId)

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using TestChat.Server.Data;
 using TestChat.Server.Hubs;
 using TestChat.Server.Services;
 
@@ -11,11 +13,17 @@ public class Program
 
         builder.Services.AddSingleton<ISessionService, SessionService>();
         builder.Services.AddScoped<ITextAnalyticsService, TextAnalyticsService>();
+        builder.Services.AddScoped<IMessageService, MessageService>();
+
+
+        var connection = builder.Configuration.GetConnectionString("AzureSQLDatabase");
+        builder.Services.AddDbContext<ChatDbContext>(options =>
+            options.UseSqlServer(connection));
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        
+
         builder.Services.AddSignalR();
 
         var app = builder.Build();
