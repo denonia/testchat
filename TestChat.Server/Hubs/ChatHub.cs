@@ -46,7 +46,7 @@ public class ChatHub : Hub<IChatServer>
             return;
         }
 
-        await Clients.Others.UserChangedName(Context.ConnectionId, userName);
+        await Clients.All.UserChangedName(Context.ConnectionId, userName);
         await Clients.Caller.ChangeNameResult(true, userName);
     }
 

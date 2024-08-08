@@ -86,7 +86,7 @@ public class ChatService : IChatService
         
         _hubConnection.On<string, string>("UserChangedName", (connectionId, userName) =>
         {
-            var user = Users.Single(u => u.ConnectionId == connectionId);
+            var user = Users.SingleOrDefault(u => u.ConnectionId == connectionId) ?? Myself;
             PublicChat.SystemMessage($"{user.DisplayName} has changed name to {userName}");
             user.History.SystemMessage($"{user.DisplayName} has changed name to {userName}");
 
@@ -106,14 +106,9 @@ public class ChatService : IChatService
         _hubConnection.On<bool, string>("ChangeNameResult", (success, userName) =>
         {
             if (success)
-            {
-                Myself!.UserName = userName;
                 OnNameChangeSuccess?.Invoke();
-            }
             else
-            {
                 OnNameChangeFail?.Invoke();
-            }
 
             NotifyStateChanged();
         });

@@ -1,15 +1,23 @@
-﻿<textarea @bind="_message" class="form-control mb-2" placeholder="Enter your message here..."></textarea>
+﻿<input type="text"
+       @bind="_message" @bind:event="oninput" @onkeydown="OnKeyDown"
+       class="form-control mb-2" placeholder="Enter your message here..."/>
 <button @onclick="SendMessage" class="btn btn-primary">Send</button>
 
 @code {
     private string? _message;
-    
-    [Parameter]
-    public EventCallback<string> OnMessageSent { get; set; }
+
+    [Parameter] public EventCallback<string> OnMessageSent { get; set; }
 
     private async Task SendMessage()
     {
         await OnMessageSent.InvokeAsync(_message);
         _message = "";
     }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key is "Enter" or "NumpadEnter")
+            await SendMessage();
+    }
+
 }
