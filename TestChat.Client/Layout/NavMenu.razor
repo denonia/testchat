@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using TestChat.Client.Services
+@inject IChatService ChatService
+@implements IDisposable
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">TestChat.Client</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -11,19 +15,22 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Public chat
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="#" Match="NavLinkMatch.All">
+                Online users (@ChatService.Users.Count)
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+        @foreach (var user in ChatService.Users)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="room" Match="NavLinkMatch.All">
+                    @user.DisplayName
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
@@ -35,6 +42,16 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        ChatService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ChatService.OnChange -= StateHasChanged;
     }
 
 }

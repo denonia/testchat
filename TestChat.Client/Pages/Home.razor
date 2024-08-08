@@ -1,7 +1,24 @@
 ﻿@page "/"
+@using TestChat.Client.Services
+@using TestChat.Client.Components
+@inject IChatService ChatService
+@implements IAsyncDisposable
 
-<PageTitle>Home</PageTitle>
+<h3>Messages</h3>
 
-<h1>Hello, world!</h1>
+<Chat History="@ChatService.ActiveChat"/>
 
-Welcome to your new app.
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ChatService.ConnectAsync();
+        ChatService.OnChange += StateHasChanged;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await ChatService.DisposeAsync();
+        ChatService.OnChange -= StateHasChanged;
+    }
+}

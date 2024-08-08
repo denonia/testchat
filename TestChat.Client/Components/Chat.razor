@@ -1,0 +1,15 @@
+﻿@using TestChat.Client.Models
+
+@if (History is not null)
+{
+    <ul>
+        @foreach (var message in History.Messages)
+        {
+            <li>@message.Body @message.SentAt</li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public ChatHistory? History { get; set; }
+}
