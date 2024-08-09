@@ -5,7 +5,10 @@ namespace TestChat.Client.Services;
 
 public class ChatService : IChatService
 {
-    private readonly HubConnection? _hubConnection;
+    private const string WelcomeMessage =
+        "Welcome to the public chat. The list of online users is shown on the left. Click on their names to message them privately.";
+
+    private readonly HubConnection _hubConnection;
 
     public ChatHistory ActiveChat => ActiveUser?.History ?? PublicChat;
     public ChatHistory PublicChat { get; } = new();
@@ -33,6 +36,8 @@ public class ChatService : IChatService
 
         await _hubConnection.StartAsync();
         Myself = new ChatUser(_hubConnection.ConnectionId);
+
+        PublicChat.SystemMessage(WelcomeMessage);
     }
 
     public async Task SendMessageAsync(string text)
@@ -77,7 +82,7 @@ public class ChatService : IChatService
                 PublicChat.UserMessage(user.DisplayName, message, sentiment);
                 NotifyStateChanged();
             });
-        
+
         _hubConnection.On<string, string>("UserOnline", (connectionId, userName) =>
         {
             Users.Add(new ChatUser(connectionId, userName));
