@@ -3,6 +3,10 @@ using TestChat.Client.Models;
 
 namespace TestChat.Client.Services;
 
+/// <summary>
+/// Service that provides functionality for real-time interaction with the chat server.
+/// SignalR implementation.
+/// </summary>
 public class ChatService : IChatService
 {
     private const string WelcomeMessage =
@@ -37,7 +41,7 @@ public class ChatService : IChatService
         try
         {
             await _hubConnection.StartAsync();
-            Myself = new ChatUser(_hubConnection.ConnectionId);
+            Myself = new ChatUser(_hubConnection.ConnectionId!);
             PublicChat.SystemMessage(WelcomeMessage);
         }
         catch (HttpRequestException)
@@ -51,7 +55,7 @@ public class ChatService : IChatService
         if (ActiveChat == PublicChat)
             await _hubConnection.SendAsync("SendPublicMessage", text);
         else
-            await _hubConnection.SendAsync("SendMessage", ActiveUser.ConnectionId, text);
+            await _hubConnection.SendAsync("SendMessage", ActiveUser!.ConnectionId, text);
 
         NotifyStateChanged();
     }
@@ -69,14 +73,11 @@ public class ChatService : IChatService
 
     private void RegisterHandlers()
     {
-        if (_hubConnection is null)
-            return;
-
         _hubConnection.On<string, string, string, SentimentAnalysisResult>("ReceiveMessage",
             (targetId, senderId, message, sentiment) =>
             {
-                var target = Users.SingleOrDefault(u => u.ConnectionId == targetId) ?? Myself;
-                var sender = Users.SingleOrDefault(u => u.ConnectionId == senderId) ?? Myself;
+                var target = FindUser(targetId);
+                var sender = FindUser(senderId);
                 target.History.UserMessage(sender.DisplayName, message, sentiment);
                 NotifyStateChanged();
             });
@@ -84,7 +85,7 @@ public class ChatService : IChatService
         _hubConnection.On<string, string, SentimentAnalysisResult>("ReceivePublicMessage",
             (senderId, message, sentiment) =>
             {
-                var user = Users.SingleOrDefault(u => u.ConnectionId == senderId) ?? Myself;
+                var user = FindUser(senderId);
                 PublicChat.UserMessage(user.DisplayName, message, sentiment);
                 NotifyStateChanged();
             });
@@ -105,7 +106,7 @@ public class ChatService : IChatService
 
         _hubConnection.On<string, string>("UserChangedName", (connectionId, userName) =>
         {
-            var user = Users.SingleOrDefault(u => u.ConnectionId == connectionId) ?? Myself;
+            var user = FindUser(connectionId);
             PublicChat.SystemMessage($"{user.DisplayName} has changed name to {userName}");
             user.History.SystemMessage($"{user.DisplayName} has changed name to {userName}");
 
@@ -135,9 +136,10 @@ public class ChatService : IChatService
 
     private void NotifyStateChanged() => OnChange?.Invoke();
 
+    private ChatUser FindUser(string targetId) => Users.SingleOrDefault(u => u.ConnectionId == targetId) ?? Myself!;
+
     public async ValueTask DisposeAsync()
     {
-        if (_hubConnection is not null)
-            await _hubConnection.DisposeAsync();
+        await _hubConnection.DisposeAsync();
     }
 }

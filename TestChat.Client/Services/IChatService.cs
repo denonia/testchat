@@ -2,6 +2,9 @@
 
 namespace TestChat.Client.Services;
 
+/// <summary>
+/// Service that provides functionality for real-time interaction with the chat server.
+/// </summary>
 public interface IChatService : IAsyncDisposable
 {
     ChatHistory ActiveChat { get; }

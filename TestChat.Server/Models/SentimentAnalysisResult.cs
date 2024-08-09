@@ -1,5 +1,8 @@
 ﻿namespace TestChat.Server.Models;
 
+/// <summary>
+/// Class that represents results of sentiment analysis performed on a user's message.
+/// </summary>
 public class SentimentAnalysisResult
 {
     public double PositiveScore { get; }

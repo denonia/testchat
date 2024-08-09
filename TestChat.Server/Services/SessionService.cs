@@ -2,6 +2,10 @@
 
 namespace TestChat.Server.Services;
 
+/// <summary>
+/// Service to keep track of active user sessions.
+/// Basic in-memory implementation using a dictionary.
+/// </summary>
 public class SessionService : ISessionService
 {
     private readonly List<UserSession> _activeSessions = [];
@@ -18,8 +22,11 @@ public class SessionService : ISessionService
 
     public bool SetUserName(string connectionId, string userName)
     {
-        var session = FindUser(connectionId);
-        if (_activeSessions.Any(s => s.UserName == userName) || session is null)
+        var session = FindUser(connectionId)!;
+        userName = userName.Trim();
+
+        // Don't change the username if it's taken or empty
+        if (_activeSessions.Any(s => s.UserName == userName) || string.IsNullOrEmpty(userName))
             return false;
 
         session.UserName = userName;

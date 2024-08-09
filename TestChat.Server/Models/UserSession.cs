@@ -1,5 +1,8 @@
 ﻿namespace TestChat.Server.Models;
 
+/// <summary>
+/// Class that represents an active chat user.
+/// </summary>
 public class UserSession
 {
     public string DisplayName => UserName ?? ConnectionId;

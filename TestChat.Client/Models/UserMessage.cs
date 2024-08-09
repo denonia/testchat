@@ -1,5 +1,9 @@
 ﻿namespace TestChat.Client.Models;
 
+/// <summary>
+/// Class that represents a message sent by user.
+/// It additionally contains sender's name and sentiment analysis results.
+/// </summary>
 public class UserMessage : Message
 {
     public string SenderName { get; }

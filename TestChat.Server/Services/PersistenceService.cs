@@ -4,11 +4,15 @@ using TestChat.Server.Models;
 
 namespace TestChat.Server.Services;
 
-public class MessageService : IMessageService
+/// <summary>
+/// Service for saving messages and sentiment analysis results in storage.
+/// Entity Framework Core implementation.
+/// </summary>
+public class PersistenceService : IPersistenceService
 {
     private readonly ChatDbContext _dbContext;
 
-    public MessageService(ChatDbContext dbContext)
+    public PersistenceService(ChatDbContext dbContext)
     {
         _dbContext = dbContext;
     }

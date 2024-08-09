@@ -2,7 +2,10 @@
 
 namespace TestChat.Server.Hubs;
 
-public interface IChatServer
+/// <summary>
+/// Interface that represents SignalR messages to be received by clients.
+/// </summary>
+public interface IChatUser
 {
     Task ReceiveMessage(string roomId, string senderId, string message, SentimentAnalysisResult sentiment);
     Task ReceivePublicMessage(string senderId, string message, SentimentAnalysisResult sentiment);

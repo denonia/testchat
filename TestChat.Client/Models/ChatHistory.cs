@@ -1,5 +1,8 @@
 ﻿namespace TestChat.Client.Models;
 
+/// <summary>
+/// Class that represents the history of messages sent in a chat room.
+/// </summary>
 public class ChatHistory
 {
     public List<Message> Messages { get; } = [];

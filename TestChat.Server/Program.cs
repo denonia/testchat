@@ -13,7 +13,7 @@ public class Program
 
         builder.Services.AddSingleton<ISessionService, SessionService>();
         builder.Services.AddScoped<ITextAnalyticsService, TextAnalyticsService>();
-        builder.Services.AddScoped<IMessageService, MessageService>();
+        builder.Services.AddScoped<IPersistenceService, PersistenceService>();
 
 
         var connection = builder.Configuration.GetConnectionString("AzureSQLDatabase");

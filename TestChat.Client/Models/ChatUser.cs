@@ -1,5 +1,8 @@
 ﻿namespace TestChat.Client.Models;
 
+/// <summary>
+/// Class that represents an active chat user.
+/// </summary>
 public class ChatUser
 {
     public string ConnectionId { get; }

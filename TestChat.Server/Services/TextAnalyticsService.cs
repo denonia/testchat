@@ -4,6 +4,10 @@ using TestChat.Server.Models;
 
 namespace TestChat.Server.Services;
 
+/// <summary>
+/// Service for performing sentiment analysis on messages.
+/// Azure Cognitive Services implementation.
+/// </summary>
 public class TextAnalyticsService : ITextAnalyticsService
 {
     private readonly TextAnalyticsClient _client;
