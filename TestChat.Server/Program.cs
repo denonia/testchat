@@ -24,7 +24,10 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddSignalR();
+        if (builder.Environment.IsDevelopment())
+            builder.Services.AddSignalR();
+        else
+            builder.Services.AddSignalR().AddAzureSignalR();
 
         var app = builder.Build();
 
@@ -34,9 +37,10 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        var clientUrl = builder.Configuration["ClientUrl"];
+        app.UseCors(options => options.WithOrigins(clientUrl).AllowAnyHeader().AllowAnyMethod());
 
-        app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        app.UseHttpsRedirection();
 
         app.MapControllers();
         app.MapHub<ChatHub>("chathub");
