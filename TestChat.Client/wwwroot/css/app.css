@@ -110,3 +110,7 @@ code {
     overflow-anchor: auto;
     height: 1px;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}

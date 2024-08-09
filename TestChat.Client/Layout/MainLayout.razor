@@ -11,7 +11,7 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
+        <div class="top-row px-4 cursor-pointer">
             <a @onclick="ShowChangeNameModal">Change name</a>
         </div>
 
@@ -27,9 +27,14 @@
 {
     private Modal _changeNameModal = default!;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await ShowChangeNameModal();
+    }
+
     private async Task ShowChangeNameModal()
     {
-        await _changeNameModal.ShowAsync<ChangeNameModal>("Change name",
+        await _changeNameModal.ShowAsync<ChangeNameModal>("Enter your name",
             parameters: new Dictionary<string, object>
             {
                 { "SaveClicked", EventCallback.Factory.Create<string>(this, SaveClicked) },
