@@ -34,10 +34,16 @@ public class ChatService : IChatService
     {
         RegisterHandlers();
 
-        await _hubConnection.StartAsync();
-        Myself = new ChatUser(_hubConnection.ConnectionId);
-
-        PublicChat.SystemMessage(WelcomeMessage);
+        try
+        {
+            await _hubConnection.StartAsync();
+            Myself = new ChatUser(_hubConnection.ConnectionId);
+            PublicChat.SystemMessage(WelcomeMessage);
+        }
+        catch (HttpRequestException)
+        {
+            PublicChat.SystemMessage("Failed to connect to the server.");
+        }
     }
 
     public async Task SendMessageAsync(string text)
