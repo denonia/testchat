@@ -1,5 +1,23 @@
 ﻿# TestChat
 
+Real-time chat with sentiment analysis, made with SignalR and Azure Cognitive Services. The client application was made
+with Blazor WebAssembly.
+
+Supports public and private messaging between users. Saves all messages and sentiment analysis results to database.
+
+### Client life cycle
+
+* Client connects to the SignalR hub located at `/chathub`. Upon connection the server sends information about all
+  currently online users, their IDs and names with **UserOnline** messages.
+* Client may send a **SendMessage** message with target's ID for a private message or **SendPublicMessage**.
+* Client may change their name with **ChangeName** message. In response, server sends **ChangeNameResult** with a
+  boolean value indicating whether the change was successful.
+* When someone connects/disconnects, all other users get the **UserJoined**/**UserLeft** message with their ID.
+* When someone successfully changes name, all users get the **UserChangeName** message with the new name.
+* When someone sends a public message, all users get the **ReceivePublicMessage** message with its text and sentiment
+  analysis results.
+* When someone sends a private message, only the sender and the target get the **ReceiveMessage** message.
+
 ### Deploying to Azure
 
 1. Go to [Azure Portal](https://portal.azure.com/) and create a group with the following resources:
