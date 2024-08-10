@@ -1,4 +1,6 @@
-﻿<input type="text" @bind="_userName" class="form-control mb-2" placeholder="Name">
+﻿<input type="text"
+       @bind="_userName" @bind:event="oninput" @onkeydown="OnKeyDown"
+       class="form-control mb-2" placeholder="Name">
 
 <Button Color="ButtonColor.Primary" @onclick="OnSaveClick">Save</Button>
 <Button Color="ButtonColor.Secondary" @onclick="OnCloseClick">Close</Button>
@@ -20,6 +22,12 @@
     {
         await CloseClicked.InvokeAsync(_userName);
         _userName = "";
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key is "Enter" or "NumpadEnter")
+            await OnSaveClick();
     }
 
 }
