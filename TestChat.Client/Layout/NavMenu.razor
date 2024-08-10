@@ -16,18 +16,27 @@
         <div class="nav-item px-3">
             <NavLink class="nav-link cursor-pointer" @onclick="() => ChatService.ChangeRoom()">
                 <span class="bi bi-house-door-fill mt-2 mx-2 d-flex"></span> Public chat
+                @if (ChatService.PublicChat.UnreadMessages > 0)
+                {
+                    <span class="badge bg-danger mx-2">@ChatService.PublicChat.UnreadMessages</span>
+                }
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link">
-                <span class="bi bi-people-fill mt-2 mx-2 d-flex"></span> Online users (@ChatService.Users.Count)
+                <span class="bi bi-people-fill mt-2 mx-2 d-flex"></span> Online users
+                <span class="badge bg-secondary mx-2">@ChatService.Users.Count</span>
             </NavLink>
         </div>
         @foreach (var user in ChatService.Users)
         {
             <div class="nav-item px-3 cursor-pointer">
                 <NavLink class="nav-link" @onclick="() => ChatService.ChangeRoom(user.ConnectionId)">
-                    @user.DisplayName
+                    @user.DisplayName 
+                    @if (user.History.UnreadMessages > 0)
+                    {
+                        <span class="badge bg-danger mx-2">@user.History.UnreadMessages</span>
+                    }
                 </NavLink>
             </div>
         }

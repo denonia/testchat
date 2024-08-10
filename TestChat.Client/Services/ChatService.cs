@@ -57,7 +57,7 @@ public class ChatService : IChatService
         else
             await _hubConnection.SendAsync("SendMessage", ActiveUser!.ConnectionId, text);
 
-        NotifyStateChanged();
+        StateChanged();
     }
 
     public async Task ChangeNameAsync(string userName)
@@ -68,7 +68,7 @@ public class ChatService : IChatService
     public void ChangeRoom(string? userId = null)
     {
         ActiveUser = Users.SingleOrDefault(u => u.ConnectionId == userId);
-        NotifyStateChanged();
+        StateChanged();
     }
 
     private void RegisterHandlers()
@@ -79,7 +79,7 @@ public class ChatService : IChatService
                 var target = FindUser(targetId);
                 var sender = FindUser(senderId);
                 target.History.UserMessage(sender.DisplayName, message, sentiment);
-                NotifyStateChanged();
+                StateChanged();
             });
 
         _hubConnection.On<string, string, SentimentAnalysisResult>("ReceivePublicMessage",
@@ -87,13 +87,13 @@ public class ChatService : IChatService
             {
                 var user = FindUser(senderId);
                 PublicChat.UserMessage(user.DisplayName, message, sentiment);
-                NotifyStateChanged();
+                StateChanged();
             });
 
         _hubConnection.On<string, string>("UserOnline", (connectionId, userName) =>
         {
             Users.Add(new ChatUser(connectionId, userName));
-            NotifyStateChanged();
+            StateChanged();
         });
 
         _hubConnection.On<string>("UserJoined", connectionId =>
@@ -101,7 +101,7 @@ public class ChatService : IChatService
             PublicChat.SystemMessage($"{connectionId} has joined");
 
             Users.Add(new ChatUser(connectionId));
-            NotifyStateChanged();
+            StateChanged();
         });
 
         _hubConnection.On<string, string>("UserChangedName", (connectionId, userName) =>
@@ -112,7 +112,7 @@ public class ChatService : IChatService
 
             user.UserName = userName;
 
-            NotifyStateChanged();
+            StateChanged();
         });
 
         _hubConnection.On<string>("UserLeft", connectionId =>
@@ -120,7 +120,7 @@ public class ChatService : IChatService
             PublicChat.SystemMessage($"{connectionId} has left");
 
             Users.RemoveAll(u => u.ConnectionId == connectionId);
-            NotifyStateChanged();
+            StateChanged();
         });
 
         _hubConnection.On<bool, string>("ChangeNameResult", (success, userName) =>
@@ -130,11 +130,17 @@ public class ChatService : IChatService
             else
                 OnNameChangeFail?.Invoke();
 
-            NotifyStateChanged();
+            StateChanged();
         });
     }
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void StateChanged()
+    {
+        // Mark all messages in active chat as read
+        ActiveChat.MarkAllAsRead();
+        
+        OnChange?.Invoke();
+    }
 
     private ChatUser FindUser(string targetId) => Users.SingleOrDefault(u => u.ConnectionId == targetId) ?? Myself!;
 

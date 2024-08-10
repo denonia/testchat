@@ -6,6 +6,8 @@
 public class ChatHistory
 {
     public List<Message> Messages { get; } = [];
+    public int UnreadMessages => Messages.Count(m => !m.IsRead);
+    public void MarkAllAsRead() => Messages.ForEach(m => m.IsRead = true);
 
     public void SystemMessage(string text) => Messages.Add(new SystemMessage(text));
     

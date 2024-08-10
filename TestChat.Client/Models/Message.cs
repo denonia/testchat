@@ -7,5 +7,6 @@
 public abstract class Message
 {
     public abstract string Body { get; }
+    public bool IsRead { get; set; }
     public DateTime SentAt { get; set; } = DateTime.Now;
 }

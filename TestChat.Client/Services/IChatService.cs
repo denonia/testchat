@@ -8,6 +8,7 @@ namespace TestChat.Client.Services;
 public interface IChatService : IAsyncDisposable
 {
     ChatHistory ActiveChat { get; }
+    ChatHistory PublicChat { get; }
     ChatUser? Myself { get; }
     ChatUser? ActiveUser { get; }
     List<ChatUser> Users { get; }
