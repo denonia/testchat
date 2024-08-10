@@ -27,7 +27,7 @@
         ToastService.Notify(new ToastMessage(ToastType.Success, "Name changed successfully."));
 
     private void OnNameChangeFail() =>
-        ToastService.Notify(new ToastMessage(ToastType.Danger, "Name is already taken!"));
+        ToastService.Notify(new ToastMessage(ToastType.Danger, "Name is not available!"));
 
     protected override async Task OnInitializedAsync()
     {
