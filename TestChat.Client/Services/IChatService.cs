@@ -14,6 +14,7 @@ public interface IChatService : IAsyncDisposable
     List<ChatUser> Users { get; }
     
     event Action? OnChange;
+    event Action? OnChatRoomChange;
     event Action? OnNameChangeSuccess;
     event Action? OnNameChangeFail;
     

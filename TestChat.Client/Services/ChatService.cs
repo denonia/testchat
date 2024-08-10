@@ -22,6 +22,7 @@ public class ChatService : IChatService
     public List<ChatUser> Users { get; } = [];
 
     public event Action? OnChange;
+    public event Action? OnChatRoomChange;
     public event Action? OnNameChangeSuccess;
     public event Action? OnNameChangeFail;
 
@@ -68,6 +69,7 @@ public class ChatService : IChatService
     public void ChangeRoom(string? userId = null)
     {
         ActiveUser = Users.SingleOrDefault(u => u.ConnectionId == userId);
+        OnChatRoomChange?.Invoke();
         StateChanged();
     }
 

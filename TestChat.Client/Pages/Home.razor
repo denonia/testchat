@@ -3,6 +3,7 @@
 @using TestChat.Client.Components
 @inject IChatService ChatService
 @inject ToastService ToastService
+@inject IJSRuntime Js
 @implements IAsyncDisposable
 
 <h3>@RoomTitle</h3>
@@ -28,11 +29,19 @@
 
     private void OnNameChangeFail() =>
         ToastService.Notify(new ToastMessage(ToastType.Danger, "Name is not available!"));
+    
+    private void OnChatRoomChange()
+    {
+        // The browser shows the top of the page when chat room is changed.
+        // Scroll to the bottom instead
+        Task.Run(async () => await Js.InvokeVoidAsync("scrollToBottom"));
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await ChatService.ConnectAsync();
         ChatService.OnChange += StateHasChanged;
+        ChatService.OnChatRoomChange += OnChatRoomChange;
         ChatService.OnNameChangeSuccess += OnNameChangeSuccess;
         ChatService.OnNameChangeFail += OnNameChangeFail;
     }
@@ -41,6 +50,7 @@
     {
         await ChatService.DisposeAsync();
         ChatService.OnChange -= StateHasChanged;
+        ChatService.OnChatRoomChange -= OnChatRoomChange;
         ChatService.OnNameChangeSuccess -= OnNameChangeSuccess;
         ChatService.OnNameChangeFail -= OnNameChangeFail;
     }
